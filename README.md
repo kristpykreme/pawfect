@@ -12,6 +12,8 @@ FIRST THING U NEED TO DO!!!
 
 `npm install` -> this will install the packages needed for react app
 
+u must already have a database with the name `petcare` and table `users`
+
 ---------------------------
 
 `npm run dev` -> this command is to execute the react app. this will not connect to the server and datbase!!!! purely to see what ur website looks like
