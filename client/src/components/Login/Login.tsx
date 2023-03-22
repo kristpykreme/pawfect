@@ -7,142 +7,61 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRef, useState, useContext } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styles from "../styles/styles.module.css"
 import * as api from "../Api/api"
+import { userContext, IUser, IUserDetails } from "../../UserContext";
 
-export const initialState = {
-  firstName: '',
-  lastName: '',
-  mobile: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  otp: '',
-  isLoading: false,
-  isError: false,
-  isAuth: false,
-  // users:[]
-}
-
-const existingUser = {
-  existingEmail: '',
-  existingPassword: '',
-}
-
-
-let userExist;
 
 function Login() {
-  //-------------------------------HOOKS-------------------------------------------------------------
-  const [userData, setUserData] = useState(initialState)
-  const [existingUserData, setExistingUserData] = useState(existingUser)
-  const [checkMsg, setCheckMsg] = useState('Incorrect OTP')
-  const [color, setColor] = useState('red')
-  const [otp] = useState('1234')
-  const [visible, setVisible] = useState(false)
-  const btnRef = useRef<any>()
-  const loginBtnRef = useRef()
-  const otpRef = useRef<any>()
-  const navigate = useNavigate()
-  const [showMatchStatus, setShowMatchStatus] = useState(false)
-  const [matchStatus, setMatchStatus] = useState('passwords dont match')
+  const [email, setEmail] = React.useState<String>("");
+  const [password, setPassword] = React.useState<String>("");
+  const [message, setMessage] = React.useState<String>("");
+  const [errorMessage, setErrorMessage] = React.useState<String>("");
+  const { user, setUser} = useContext(userContext);
 
-  const [showForm1, setShowForm1] = useState(true)
-  const [showForm2, setShowForm2] = useState(false)
-  const [showForm3, setShowForm3] = useState(false)
-
-  //------------------------FUNCTIONS----------------------------------------------------------
-  const getInput = (e : any) => {
-    let name = e.target.name
-    // console.log(e.target.name)
-
-    if (name === 'existingEmail' || name === 'existingPassword') {
-      setExistingUserData(
-        (prev) => (prev = { ...prev, [name]: e.target.value }),
-      )
-      console.log(name)
-    } else {
-      setUserData((prev) => (prev = { ...prev, [name]: e.target.value }))
-      if (e.target.name === 'mobile') {
-        if (btnRef.current != undefined) {
-          btnRef.current.disabled = false
-        }
-      }
-
-      if (e.target.name === 'confirmPassword') {
-        setShowMatchStatus(true)
-        if (e.target.value === userData.password) {
-          if (otpRef.current != undefined) {
-            otpRef.current.disabled = false
-          }
-          setMatchStatus('passwords match')
-          setColor('green')
-        } else {
-          if (otpRef.current != undefined) {
-            otpRef.current.disabled = true
-          }
-          setMatchStatus('passwords dont match')
-          setColor('red')
-        }
-        // console.log(userData,"outside")
-      }
-      if (e.target.name === 'otp') {
-        setShowMatchStatus(false)
-        setVisible(true)
-        if (e.target.value === otp) {
-          setCheckMsg('OTP Matched')
-          setColor('green')
-          setUserData((prev) => (prev = { ...prev, isAuth: true }))
-        } else {
-          setCheckMsg('Incorrect OTP')
-          setColor('red')
-        }
-        if (e.target.value.length === 0) {
-          // console.log("len is 0", e.target.value)
-          setVisible(false)
-        }
-      }
-    }
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  function handleEmailChange(email: any) {
+    setEmail(email.target.value);
   }
 
-  // const toggleForms = async (e) => {
-    // console.log(e.target.innerText)
-    // console.log("clicking of proceed button");
-    // if (e.target.innerText === 'Proceed') {
-    //   await dispatch(getUserLoginDetails(userData.mobile))
-    //   userExist = JSON.parse(localStorage.getItem('currentUser'))
+  function handlePasswordChange(password: any) {
+    setPassword(password.target.value);
+  }
 
-    //   console.log(userExist, 'current which tried to login')
-    //   if (userExist) {
-    //     updateUserAuthStatus(userExist.id, { isAuth: true })
-    //     userExist.isAuth = true
-    //     localStorage.setItem('currentUser', JSON.stringify(userExist))
-    //     setShowForm3(true)
-    //     // setShowForm1(prev => !prev);
-    //     setShowForm1(false)
-    //     setShowForm2(false)
-    //     console.log('yo')
-    //   } else {
-    //     alert('Default OTP: 1234')
+  async function handleSignIn() { 
+    if (email != "" && password != "") {
+      setMessage("");
 
-    //     setShowForm3(false)
-    //     setVisible(false)
-    //     setShowForm1((prev) => !prev)
-    //     setShowForm2((prev) => !prev)
-    //   }
-    // } else if (e.target.innerText === 'Cancel') {
-    //   setUserData(initialState)
-    // }
-    // // else{
-
-    // //   setVisible(false)
-    // //   setShowForm1((prev) => !prev)
-    // //   setShowForm2((prev) => !prev)
-    // //   setShowForm3(false)
-    // // }
-
+      const existingUser = {
+        email: email,
+        password: password
+      }
+      let response = await api.signInUser(existingUser)
+      if (response[0]) {
+        const user : any = response[1]
+        setErrorMessage("")
+        setMessage(`Welcome ${user.username}`)
+        const existingUser : IUserDetails = {
+          username: user.username,
+          email: user.email
+        }
+        setUser(existingUser)
+        navigate('/account')
+      }
+      
+      else {
+        setMessage("");
+        setErrorMessage(response[1] as string)
+      }
+    }
+    else {
+      setErrorMessage("Fields cannot be empty");
+    }
+  }
   return (
     <div>
       <Navbar />
@@ -189,30 +108,40 @@ function Login() {
                 border="1px solid gray"
                 borderRadius="5px 5px 5px 5px"
                 type="text"
-                name="email"
-                value={userData.email}
-                onChange={getInput}
                 padding="5px"
                 // maxLength={}
+                onChange={(email) => handleEmailChange(email)}
             />
             <FormLabel id={styles.form1} mt="20px">
               Password
             </FormLabel>
             <Input
-                width="100%"
-                border="1px solid gray"
-                borderRadius="5px 5px 5px 5px"
-                type="text"
-                name="password"
-                value={userData.password}
-                onChange={getInput}
-                padding="5px"
-                // maxLength={}
+              width="100%"
+              border="1px solid gray"
+              borderRadius="5px 5px 5px 5px"
+              type="password"
+              padding="5px"
+              // maxLength={}
+              onChange={(password) => handlePasswordChange(password)}
             />
             
           </FormControl>
           <Center>
-          <Button m="20px" padding="5px" border="2px solid gray" borderRadius="5px" bgColor="white" textColor="black" disabled={false}>Log in with Email</Button>
+          {message &&<Text textAlign={"center"} fontSize="14px">{message}</Text>}
+          {errorMessage &&<Text textAlign={"center"} fontSize="14px" color="red">{errorMessage}</Text>}
+          </Center>
+          <Center>
+          <Button
+            m="20px"
+            onClick={() => handleSignIn()}
+            padding="5px"
+            border="2px solid gray"
+            borderRadius="5px"
+            bgColor="white"
+            textColor="black"
+            disabled={false}>
+            Log in with Email
+          </Button>
           </Center>
           <hr></hr>
             <Text textAlign="center" id={styles.subHeading}>

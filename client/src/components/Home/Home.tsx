@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import Navbar from "../NavigationBar/Navbar";
 import { Box, Image, Heading, Text, Input, Button, Center, Divider, defineStyle, defineStyleConfig, extendTheme} from '@chakra-ui/react'
 import styles from "../styles/styles.module.css"
+import { userContext } from "../../UserContext";
 
 function Home() {
+
+  const { user, setUser} = useContext(userContext);
   return (
     <div>
       <Navbar />
-      <h1>Pawfect Finder</h1>
+      <h1>Hello {user.username}</h1>
       <Box
       id={styles.mainContainer}
       display="flex"

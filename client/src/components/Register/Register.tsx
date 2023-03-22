@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useContext} from "react";
+import { userContext, IUser, IUserDetails } from "../../UserContext";
 import Navbar from "../NavigationBar/Navbar";
 import { Box, Image, Heading, Text, Input, Button, Center, Divider, defineStyle, defineStyleConfig, extendTheme} from '@chakra-ui/react'
 import {
@@ -8,17 +9,21 @@ import {
   FormHelperText,
 } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styles from "../styles/styles.module.css"
 import * as api from "../Api/api";
 
 function Register() {
-  const [username, setUsername] = React.useState<String>("");
-  const [email, setEmail] = React.useState<String>("");
-  const [password, setPassword] = React.useState<String>("");
-  const [message, setMessage] = React.useState<String>("");
-  const [newUser, setNewUser] = React.useState<any>();
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [username, setUsername] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [message, setMessage] = React.useState<string>("");
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
+  const { user, setUser} = useContext(userContext);
+
   function handleUsernameChange(username: any) {
     setUsername(username.target.value);
   }
@@ -40,15 +45,25 @@ function Register() {
         email: email,
         password: password
       }
-      setNewUser(newUser);
-      console.log(newUser);
-      let success = await api.insertEntry(newUser)
-        if (!success) {
-            return
+      let response = await api.registerUser(newUser)
+      if (response[0]) {
+        setErrorMessage("")
+        setMessage("User created :)")
+        const user : IUserDetails = {
+          username: username,
+          email: email
+        }
+        setUser(user)
+        navigate('/account')
+      }
+      
+      else {
+        setMessage("");
+        setErrorMessage(response[1] as string)
       }
     }
     else {
-      setMessage("Fields cannot be empty");
+      setErrorMessage("Fields cannot be empty");
     }
   }
 
@@ -97,7 +112,6 @@ function Register() {
                 border="1px solid gray"
                 borderRadius="5px 5px 5px 5px"
                 type="text"
-                name="username"
                 padding="5px"
                 // maxLength={}
                 onChange={(username) => handleUsernameChange(username)}
@@ -111,7 +125,6 @@ function Register() {
                 border="1px solid gray"
                 borderRadius="5px 5px 5px 5px"
                 type="text"
-                name="email"
                 padding="5px"
                 // maxLength={}
                 onChange={(email) => handleEmailChange(email)}
@@ -124,15 +137,15 @@ function Register() {
                 width="100%"
                 border="1px solid gray"
                 borderRadius="5px 5px 5px 5px"
-                type="text"
-                name="password"
+                type="password"
                 padding="5px"
                 // maxLength={}
                 onChange={(password) => handlePasswordChange(password)}
             />
           </FormControl>
           <Center>
-          {message && <FormLabel mt="10px">{message}</FormLabel>}
+          {message &&<Text textAlign={"center"} fontSize="14px">{message}</Text>}
+          {errorMessage &&<Text textAlign={"center"} fontSize="14px" color="red">{errorMessage}</Text>}
           </Center>
           <Center>
           <Button
@@ -148,11 +161,13 @@ function Register() {
           </Button>
           </Center>
           <hr></hr>
-            <Text textAlign="center" id={styles.subHeading}>
+          <Center>
+            <Text textAlign={"center"} id={styles.subHeading}>
                 Already have a Pawfect account? <Link to="/login">
                 Log in!
                 </Link>
             </Text>
+            </Center>
           </Box>
           </>
         </Box>

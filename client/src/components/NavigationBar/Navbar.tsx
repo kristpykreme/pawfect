@@ -55,7 +55,7 @@ function Navbar() {
               <Link to="/pet-sitters">Become a Pet Sitter</Link>
             </li>
             <li>
-              <Link to="/help">Help Center</Link>
+              <Link to="/account">My Account</Link>
             </li>
 
             <Link to="/login">
