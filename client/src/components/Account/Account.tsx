@@ -36,7 +36,18 @@ function Help() {
             bgColor="white"
             textColor="black"
             disabled={false}>
-              Logout
+            Post Pet
+      </Button>
+      <Button
+            m="20px"
+            onClick={() => handleLogout()}
+            padding="5px"
+            border="2px solid gray"
+            borderRadius="5px"
+            bgColor="white"
+            textColor="black"
+            disabled={false}>
+            Logout
       </Button>
       <footer className="footer">
         <p className="footer-by">

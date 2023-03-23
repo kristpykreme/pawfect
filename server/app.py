@@ -14,10 +14,10 @@ CORS(app)
 # bcrypt = Bcrypt(app)
 # app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
-YOUR_POSTGRES_PASSWORD = "urpassword"
+YOUR_POSTGRES_PASSWORD = "Fait87uki"
 connection_string = f"postgresql://postgres:{YOUR_POSTGRES_PASSWORD}@localhost/petcare"
 engine = sqlalchemy.create_engine(
-    "postgresql://postgres:urpassword@localhost/petcare"
+    "postgresql://postgres:Fait87uki@localhost/petcare"
 )
 
 db = engine.connect()
@@ -28,7 +28,7 @@ def home():
 
 @app.route('/sign-up', methods=['GET', 'POST'])
 def signUp():
-    try:
+    try:  
         data = request.data.decode()
         user = json.loads(data)
         statement, checkEmail, checkUser = newUser(user)
@@ -46,6 +46,22 @@ def signUp():
     except Exception as e:
         db.rollback()
         return Response("Server problem.", 403)
+    
+# def signUp():
+#         data = request.data.decode()
+#         user = json.loads(data)
+#         statement, checkEmail, checkUser = newUser(user)
+#         emailRes = db.execute(checkEmail).fetchone()
+#         userRes = db.execute(checkUser).fetchone()
+#         if emailRes and userRes:
+#             return Response("Account with this email and username already exists.", 403)
+#         elif userRes:
+#             return Response("Account with this username already exists.", 403)
+#         elif emailRes:
+#             return Response("Account with this email already exists.", 403)
+#         db.execute(statement)
+#         db.commit()
+#         return Response(statement.text, 200)
 
 def newUser(user: Dict):
     username = user['username']
@@ -72,6 +88,12 @@ def signIn():
     except Exception as e:
         db.rollback()
         return Response("Server problem.", 403)
+    
+def searchSittingServices():
+    statement = sqlalchemy.text("SELECT * FROM users u, caretakers ct WHERE ct.uname = u.username")
+    caretakers = db.execute(statement)
+    return caretakers
+    
     
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
