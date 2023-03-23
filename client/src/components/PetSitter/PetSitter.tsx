@@ -77,14 +77,14 @@ function PetSitter() {
             <Box textAlign={"center"} m="10px">
             <FormLabel m="10px" textAlign={"center"}>
               Start Date:</FormLabel>
-              <DatePicker selected={start} onChange={(date) => setStart(date)}
+              <DatePicker selected={start} onChange={(date : any) => setStart(date)}
             ></DatePicker>
             </Box>
             <></>
             <Box textAlign={"center"} m="10px">
             <FormLabel m="10px" textAlign={"center"}>
               End Date:</FormLabel>
-              <DatePicker selected={end} onChange={(date) => setEnd(date)}
+              <DatePicker selected={end} onChange={(date : any) => setEnd(date)}
             ></DatePicker>
             </Box>
             <></>
