@@ -1,3 +1,6 @@
+.time {
+  margin-left: 10px;
+}
 @media only screen and (max-width: 600px) {
     #mainContainer{
       width: 70%;
@@ -24,6 +27,7 @@
      margin: auto;
      width: 150px;
     }
+
  }
  @media only screen and (max-width: 550px) {
      #mainContainer{

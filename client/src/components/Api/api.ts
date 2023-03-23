@@ -22,3 +22,10 @@ export async function signInUser(entry: any) {
 
     return([res.ok, res.data])
 }
+
+export async function createProfile(entry: any) {
+    let res = await api.post("/pet-sitters", entry);
+    console.log(res);
+
+    return([res.ok, res.data])
+}
