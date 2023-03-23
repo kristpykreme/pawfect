@@ -104,6 +104,7 @@ def createProfile():
 @app.route('/find-services', methods=['GET','POST'])
 def findServices():
     if request.method == "GET":
+        print(session['username'])
         statement = sqlalchemy.text(f"SELECT * FROM petsitters;")
         res = db.execute(statement).fetchall()
         db.commit()
