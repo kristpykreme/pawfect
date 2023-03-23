@@ -29,4 +29,3 @@ export async function createProfile(entry: any) {
 
     return([res.ok, res.data])
 }
-

@@ -2,7 +2,7 @@ from flask_cors import CORS, cross_origin
 import json
 import sqlalchemy
 from flask_bcrypt import Bcrypt
-from flask import Flask, request, Response, flash, session
+from flask import Flask, request, Response, flash, session, jsonify
 from typing import Dict
 
 app = Flask(__name__, static_url_path='')  # Setup the flask app by creating an instance of Flask
@@ -101,5 +101,30 @@ def createProfile():
         db.rollback()
         return Response("Server problem.", 403)
     
+@app.route('/find-services', methods=['GET','POST'])
+def findServices():
+    if request.method == "GET":
+        statement = sqlalchemy.text(f"SELECT * FROM petsitters;")
+        res = db.execute(statement).fetchall()
+        db.commit()
+        petSitters = []
+        data = {}
+        for result in res:
+            data = {'username':result[0], 
+                    'startDate':result[1], 
+                    'endDate':result[2], 
+                    'price':result[3], 
+                    'dog':result[4], 
+                    'cat':result[5], 
+                    'petBoarding':result[6], 
+                    'dogWalking':result[7], 
+                    'petGrooming':result[8], 
+                    'petDaycare':result[9], 
+                    'petSitting':result[10],
+                    'petTaxi':result[11]}
+            petSitters.append(data)
+            data = {}
+        return jsonify(petSitters), 200
+
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
     app.run(debug=True)  # Start the server
