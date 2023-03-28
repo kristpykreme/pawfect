@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useMemo, Dispatch, SetStateAction} from "react";
+import { useState, useEffect, useMemo, Dispatch, SetStateAction} from "react";
 import Navbar from "./components/NavigationBar/Navbar";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
@@ -18,6 +18,17 @@ const initial = {
 
 function App() {
   const [user, setUser] = useState(initial)
+  // Load user data from localStorage on component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+  // Store user data in localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user))
+  }, [user])
   const ProviderValue = useMemo(() => ({user, setUser}), [user, setUser])
     return (
     <userContext.Provider value={ProviderValue}>

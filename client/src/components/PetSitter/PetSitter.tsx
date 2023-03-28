@@ -126,7 +126,7 @@ function PetSitter() {
               bgColor="white"
               textColor="black"
               disabled={false}>
-              Sumbit Form
+              Submit Form
             </Button>
             </Box>
       </Box>

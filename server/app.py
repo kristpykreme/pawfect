@@ -14,10 +14,10 @@ CORS(app)
 # bcrypt = Bcrypt(app)
 # app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
-YOUR_POSTGRES_PASSWORD = "ur_password"
+YOUR_POSTGRES_PASSWORD = "postgres"
 connection_string = f"postgresql://postgres:{YOUR_POSTGRES_PASSWORD}@localhost/petcare"
 engine = sqlalchemy.create_engine(
-    "postgresql://postgres:ur_password@localhost/petcare"
+    "postgresql://postgres:postgres@localhost/petcare"
 )
 
 db = engine.connect()
@@ -127,4 +127,5 @@ def findServices():
         return jsonify(petSitters), 200
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(debug=True)  # Start the server
+    app.run(host='172.25.77.198', debug=True)  # Start the server
+    #app.run(debug=True)
