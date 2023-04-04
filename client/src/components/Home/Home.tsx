@@ -31,9 +31,13 @@ function Home() {
             alt="loginImage"
             borderRadius="10px"
           />
+          <div>
+            Hired Jobs:
+        
+          </div>
         </Box>
-      </Box>
 
+      </Box>
       <footer className="footer">
         <p className="footer-by">
           IT2002 App

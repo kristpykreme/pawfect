@@ -2,7 +2,7 @@ from flask_cors import CORS, cross_origin
 import json
 import sqlalchemy
 from flask_bcrypt import Bcrypt
-from flask import Flask, request, Response, flash, jsonify
+from flask import Flask, request, Response, flash, jsonify, session
 from typing import Dict
 
 app = Flask(__name__, static_url_path='')  # Setup the flask app by creating an instance of Flask
@@ -10,9 +10,6 @@ bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 # Eenabling the flask app to be able to communicate with any request source
 CORS(app)
-
-# bcrypt = Bcrypt(app)
-# app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 YOUR_POSTGRES_PASSWORD = "postgres"
 connection_string = f"postgresql://postgres:{YOUR_POSTGRES_PASSWORD}@localhost/petcare"
@@ -22,8 +19,22 @@ engine = sqlalchemy.create_engine(
 
 db = engine.connect()
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
+    username = session['username']
+    print(username)
+    statement = sqlalchemy.text(f"SELECT sitter_username FROM jobs "
+                                f"WHERE hirer_username LIKE '{username}';")
+    res = db.execute(statement).fetchall()
+    print(res)
+    for sitter in res:
+        print(sitter[0])
+        hirerEmail = sqlalchemy.text(f"SELECT email from users "
+                                     f"WHERE username LIKE '{sitter[0]}';")
+        res = db.execute(hirerEmail).fetchall()
+        print(res)
+    # hirerEmail = sqlalchemy.text(f"SELECT email from users "
+    #                              f"WHERE username")
     return app.send_static_file('index.html')
 
 @app.route('/sign-up', methods=['GET', 'POST'])
@@ -65,6 +76,7 @@ def signIn():
         statement = sqlalchemy.text(f"SELECT * FROM users WHERE email LIKE '{email}'")
         checkUser = db.execute(statement).fetchone()
         if checkUser and bcrypt.check_password_hash(checkUser[2], password):
+            session['username'] = checkUser[0]
             userDetails = {'username': checkUser[0], 'email': checkUser[1]} #username and email
             return userDetails
         else:
@@ -103,29 +115,44 @@ def createProfile():
     
 @app.route('/find-services', methods=['GET','POST'])
 def findServices():
-    if request.method == "GET":
-        statement = sqlalchemy.text(f"SELECT * FROM petsitters;")
-        res = db.execute(statement).fetchall()
-        db.commit()
-        petSitters = []
-        data = {}
-        for result in res:
-            data = {'username':result[0], 
-                    'startDate':result[1], 
-                    'endDate':result[2], 
-                    'price':result[3], 
-                    'dog':result[4], 
-                    'cat':result[5], 
-                    'petBoarding':result[6], 
-                    'dogWalking':result[7], 
-                    'petGrooming':result[8], 
-                    'petDaycare':result[9], 
-                    'petSitting':result[10],
-                    'petTaxi':result[11]}
-            petSitters.append(data)
+    try:
+        if request.method == "GET":
+            statement = sqlalchemy.text(f"SELECT * FROM petsitters;")
+            res = db.execute(statement).fetchall()
+            db.commit()
+            petSitters = []
             data = {}
-        return jsonify(petSitters), 200
+            for result in res:
+                data = {'username':result[0], 
+                        'startDate':result[1], 
+                        'endDate':result[2], 
+                        'price':result[3], 
+                        'dog':result[4], 
+                        'cat':result[5], 
+                        'petBoarding':result[6], 
+                        'dogWalking':result[7], 
+                        'petGrooming':result[8], 
+                        'petDaycare':result[9], 
+                        'petSitting':result[10],
+                        'petTaxi':result[11]}
+                petSitters.append(data)
+                data = {}
+            return jsonify(petSitters), 200
+        if request.method == "POST":
+            data = request.data.decode()
+            hiring = json.loads(data)
+            # print(hiring)
+            hirerUname = hiring['hirerUsername']
+            sitterUname = hiring['sitterUsername']
+            statement = sqlalchemy.text(f"INSERT INTO jobs (hirer_username, sitter_username) "
+                                        f"VALUES ('{hirerUname}','{sitterUname}');")
+            db.execute(statement)
+            db.commit()
+            return Response("Hire success", 200)
+    except Exception as e:
+        print(e)
+        return Response("Server problem.", 403)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(host='172.25.77.198', debug=True)  # Start the server
-    #app.run(debug=True)
+    # app.run(host='172.25.77.198', debug=True)  # Start the server
+    app.run(debug=True)
