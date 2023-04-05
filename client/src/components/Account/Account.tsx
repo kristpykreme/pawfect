@@ -25,8 +25,8 @@ function Help() {
     <div>
       <Navbar />
       {!user.email && <Navigate to="/login" />}
-      <h1>{user.username}</h1>
-      <h1>{user.email}</h1>
+      <h3>Username: {user.username}</h3>
+      <h3>Email: {user.email}</h3>
       <Button
             m="20px"
             onClick={() => handleLogout()}
