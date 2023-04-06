@@ -12,8 +12,8 @@ import Register from "./components/Register/Register";
 import { userContext, IUser, IUserDetails } from "./UserContext";
 
 const initial = {
-  username: "",
-  email: "",
+  username: " ",
+  email: " ",
 }
 
 function App() {

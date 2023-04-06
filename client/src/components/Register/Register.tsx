@@ -54,7 +54,7 @@ function Register() {
           email: email
         }
         setUser(user)
-        navigate('/account')
+        navigate('/')
       }
       
       else {
@@ -156,7 +156,7 @@ function Register() {
             borderRadius="5px"
             bgColor="white"
             textColor="black"
-            disabled={false}>
+            isDisabled={false}>
               Sign up
           </Button>
           </Center>

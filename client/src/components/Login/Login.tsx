@@ -50,7 +50,7 @@ function Login() {
           email: user.email
         }
         setUser(existingUser)
-        navigate('/account')
+        navigate('/')
       }
       
       else {
@@ -65,8 +65,6 @@ function Login() {
   return (
     <div>
       <Navbar />
-      <h1>Sign in</h1>
-
       <Box
       id={styles.mainContainer}
       display="flex"
@@ -139,7 +137,7 @@ function Login() {
             borderRadius="5px"
             bgColor="white"
             textColor="black"
-            disabled={false}>
+            isDisabled={false}>
             Log in with Email
           </Button>
           </Center>
