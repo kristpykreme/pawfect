@@ -4,6 +4,13 @@ A pet caring app
 
 Project Group 7
 
+client: frontend codes
+
+server: backend codes
+
+sqlfiles: sql schema and queries
+
+
 # BUILDING THE FRONTEND
 
 ---------------------------
