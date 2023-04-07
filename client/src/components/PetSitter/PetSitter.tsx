@@ -34,7 +34,7 @@ function PetSitter() {
     if (!user.email) navigate("/login");
   }, [])
 
-  async function handleSumbit() {
+  async function handleSubmit() {
     if (!user.username) {
       alert("Sign in first");
     }
@@ -128,14 +128,14 @@ function PetSitter() {
             <Box textAlign={"center"}>
             <Button
               m="20px"
-              onClick={() => handleSumbit()}
+              onClick={() => handleSubmit()}
               padding="5px"
               border="2px solid gray"
               borderRadius="5px"
               bgColor="white"
               textColor="black"
               disabled={false}>
-              Sumbit Form
+              Submit Form
             </Button>
             </Box>
       </Box>

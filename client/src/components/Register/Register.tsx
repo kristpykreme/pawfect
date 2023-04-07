@@ -70,7 +70,6 @@ function Register() {
   return (
     <div>
       <Navbar />
-      <h1>Sign up</h1>
 
       <Box
       id={styles.mainContainer}
