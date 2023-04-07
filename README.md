@@ -18,7 +18,7 @@ u must already have a database with the name `petcare` and table `users`
 
 ---------------------------
 
-`npm run dev` -> this command is to execute the react app. this will not connect to the server and datbase!!!! purely to see what ur website looks like
+`npm run dev` -> this command is to execute the react app. this will not connect to the server and database!!!! purely to see what ur website looks like
 
 `npm run build` -> this command will build the react app. dist folder in client directory will be created with the the react app inside. dont need to copy to the server because i auto made it copy to server with postbuild.cjs file
 
