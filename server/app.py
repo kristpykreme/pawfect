@@ -41,6 +41,7 @@ def signUp():
             return Response("Account with this email already exists.", 403)
         db.execute(statement)
         db.commit()
+        session['username'] = user['username']
         return Response(statement.text, 200)
     except Exception as e:
         db.rollback()
