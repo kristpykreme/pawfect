@@ -1,6 +1,8 @@
 # pawfect
 
-pet caring app
+A pet caring app
+
+Project Group 7
 
 # BUILDING THE FRONTEND
 
