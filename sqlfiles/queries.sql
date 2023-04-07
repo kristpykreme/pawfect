@@ -1,5 +1,3 @@
-All the sql queries kept here in case i need some of them back..can remove once done with main sql queries section
-
 
 --Insertion into users table upon successful sign up
 INSERT INTO users (username, email, password) 
